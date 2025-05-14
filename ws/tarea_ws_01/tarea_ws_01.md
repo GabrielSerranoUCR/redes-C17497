@@ -105,3 +105,11 @@ Porque iii) representa la comunicación para el cifrado SSL, que no ocurre en Ya
 Porque la comunicación se realiza con distintos protocolos, en el frame 6 con HTTP, y en el frame 21 con TLSv1.
 
 ## Exercise Four
+
+Para este ejercicio, ingresé a la página bing.com.
+
+Primeramente, se hizo el DNS lookup mediante el servidor DNS y mi computador, con sus respectivas direcciones IPv6, esto entre los frames 6 y 14. Igualmente, aunque fuera en IPv6, las IPs obtenidas y utilizadas posteriormente fueron IPv4.
+
+Después, se hizo el handshake TCP en los frames 15 y 16.
+
+Subsecuentemente, se realizó la conexión segura TLS (frames 17 al 25), lo que no me permitió observar la comunicación cruda. Sin embargo, se pueden observar las peticiones de las partes del sitio web debido a que se realiza otro DNS lookup (frames 40 al 48), de varios CDN de Bing, los cuales también hacen la conexión TLS (frames 53 AL 55).
