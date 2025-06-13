@@ -7,12 +7,12 @@ Log& Log::getInstance() {
 }
 
 void Log::log(const std::string& level, const std::string& message) {
-  std::filesystem::path logDir("../logs");
+  std::filesystem::path logDir("./logs");
   if (!std::filesystem::exists(logDir)) {
     std::filesystem::create_directory(logDir);
   }
   
-  std::string filename = "../logs/" + level + "_log.txt";
+  std::string filename = "./logs/" + level + "_log.txt";
   std::ofstream logFile(filename, std::ios::app);
   if (logFile.is_open()) {
     time_t now = time(0);
@@ -23,7 +23,7 @@ void Log::log(const std::string& level, const std::string& message) {
 }
 
 void Log::printLogs(const std::string& level) {
-  std::string filename = "../logs/" + level + "_log.txt";
+  std::string filename = "./logs/" + level + "_log.txt";
   std::ifstream logFile(filename);
   if (logFile.is_open()) {
     std::string line;
