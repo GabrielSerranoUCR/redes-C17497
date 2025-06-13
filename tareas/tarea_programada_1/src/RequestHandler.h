@@ -10,6 +10,17 @@
  * operations.
  */
 namespace RequestHandler {
-void handleRequest(const Request& request);
+void handleRequest(Request& request);
+/*
+ * @namespace Helper
+ * @brief Contains private helper functions for request handling.
+ */
+namespace Helper {
+size_t totalAddressesNeeded(
+    const std::vector<std::pair<std::string, size_t>>& subnetRequests);
+    void subnet(Request& request);
+    void sortSubnetRequests(Request& request);
+}  // namespace Helper
+
 }  // namespace RequestHandler
 #endif  // REQUESTHANDLER_H
