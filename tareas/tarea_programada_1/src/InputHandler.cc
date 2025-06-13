@@ -20,6 +20,10 @@ void InputHandler::processInput(const std::string input, Request& request) {
   Log::getInstance().log(
       "DEBUG", "InputHandler::processInput(): matches found: " +
                    std::to_string(matches.size()) + " - " + matches[0].str());
+  Log::getInstance().log(
+      "DEBUG",
+      "InputHandler::processInput(): address found: " + matches[1].str() +
+          " - subnet requests found: " + matches[2].str());
   request.address = Helper::assignAddress(matches[1].str());
   request.subnetRequests = Helper::assignSubnetRequests(matches[2].str());
 }
@@ -46,13 +50,18 @@ uint32_t InputHandler::Helper::assignAddress(const std::string& ipString) {
 std::vector<std::pair<std::string, size_t>>
 InputHandler::Helper::assignSubnetRequests(
     const std::string& subnetRequestsString) {
-  // Assign the subnet requests from the request
   std::vector<std::pair<std::string, size_t>> subnetRequests;
-  std::regex subnetPattern(R"((\w+):(\d+))");
-  std::sregex_iterator it(subnetRequestsString.begin(),
-                          subnetRequestsString.end(), subnetPattern);
-  std::sregex_iterator end;
 
+  std::regex singleSubnetPattern(R"((\w+)\s*,\s*(\d+))");
+  // Match the pattern for each subnet request
+  std::sregex_iterator it(subnetRequestsString.begin(),
+                          subnetRequestsString.end(), singleSubnetPattern);
+  std::sregex_iterator end;
+  if (it == end) {
+    throw std::invalid_argument(
+      "InputHandler::Helper::assignSubnetRequests(): No valid subnet requests found.");
+    }
+  // Iterate through all matches
   while (it != end) {
     std::string name = (*it)[1].str();
     size_t quantity = std::stoul((*it)[2].str());
