@@ -1,6 +1,8 @@
 #ifndef INPUTHANDLER_H
 #define INPUTHANDLER_H
 
+#include <string>
+
 #include "Request.h"
 
 /*
@@ -12,11 +14,17 @@
 * request structure.
 */
 namespace InputHandler {
-void processInput(const int argc, const char* argv[], Request& request);
-
-private:
-void assignAddress(Request& request);
-void assignSubnetRequests(Request& request);
+// Public interface
+void processInput(const std::string input, Request& request);
+/*
+ * @namespace Helper
+ * @brief Contains private helper functions for input processing.
+ */
+namespace Helper {
+uint32_t assignAddress(const std::string& ipString);
+std::vector<std::pair<std::string, size_t>> assignSubnetRequests(
+    const std::string& subnetRequestsString);
+}  // namespace Helper
 
 }  // namespace InputHandler
 
