@@ -46,7 +46,8 @@ void RequestHandler::Helper::subnet(Request& request) {
     size_t usableAddresses = subnetRequest.second;
     size_t mask =
         32 - static_cast<size_t>(std::ceil(std::log2(usableAddresses + 2)));
-    uint32_t subnetAddress = request.address & (~((1 << (32 - mask))));
+    uint32_t networkSize = 1 << (32 - mask);
+    uint32_t subnetAddress = (request.address + networkSize - 1) & ~(networkSize - 1);
 
     // Store the result in the request
     request.subnetResults.emplace_back(subnetRequest.first, subnetAddress,
@@ -57,11 +58,9 @@ void RequestHandler::Helper::subnet(Request& request) {
         "INFO", "Subnet created: " + subnetRequest.first +
                     " - Address: " + Common::addressToString(subnetAddress) +
                     " - Mask: " + std::to_string(mask));
-    subnetAddress +=
-        (1 << (32 - std::get<2>(
-                        request.subnetResults.back())));  // Increment address
-    request.address =
-        subnetAddress;  // Update the request address for next subnet
+    
+    // Update the request address for next subnet
+    request.address = subnetAddress + networkSize;
   }
 }
 
