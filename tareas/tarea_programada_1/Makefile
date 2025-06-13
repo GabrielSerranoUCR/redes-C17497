@@ -1,7 +1,7 @@
 # Compiler settings
 CC = g++
 CFLAGS = -Wall -Wextra -g
-
+ARGS = 
 # Directories
 SRC_DIR = src
 OBJ_DIR = build
@@ -29,7 +29,11 @@ $(BIN_DIR) $(OBJ_DIR):
 
 # Run the program
 run: $(EXECUTABLE)
+ifeq ($(strip $(ARGS)),)
 	./$(EXECUTABLE)
+else
+	./$(EXECUTABLE) "$(ARGS)"
+endif
 
 # Clean
 clean:
