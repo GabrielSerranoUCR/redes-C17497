@@ -28,7 +28,7 @@ void OutputHandler::printOutput(Request& request) {
 
     outputStream << "| " << std::setw(24) << subnetName << "| " << std::setw(23)
                  << Common::addressToString(subnetAddress) << "| "
-                 << std::setw(16) << (1 << (32 - subnetMask)) - 2 << "| "
+                 << std::setw(16) << (1 << (32 - subnetMask)) << "| "
                  << std::setw(9) << subnetMask << "|\n";
   }
   outputStream << "------------------------------------------------------------"
