@@ -25,6 +25,7 @@ namespace Helper {
 uint32_t assignAddress(const std::string& ipString);
 std::vector<std::pair<std::string, size_t>> assignSubnetRequests(
     const std::string& subnetRequestsString);
+bool assignAscendingOrder(const std::string& orderString);
 }  // namespace Helper
 
 }  // namespace InputHandler

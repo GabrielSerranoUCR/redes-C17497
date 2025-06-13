@@ -2,8 +2,8 @@
 
 #include <regex>
 
-#include "Log.h"
 #include "Common.h"
+#include "Log.h"
 
 void InputHandler::processInput(const std::string input, Request& request) {
   // Validate the input format using regex
@@ -11,7 +11,9 @@ void InputHandler::processInput(const std::string input, Request& request) {
     throw std::invalid_argument(
         "InputHandler::processInput(): Input cannot be empty.");
   }
-  std::regex pattern(R"((\d{1,3}(?:\.\d{1,3}){3})\s*\|\s*([^|]+))");
+  std::regex pattern(
+      R"((\d{1,3}(?:\.\d{1,3}){3})\s*\|\s*((?:\w+\s*,\s*\d+\s*;?\s*)+)\s*\|\s*(ASC|DESC))");
+
   std::smatch matches;
 
   if (!std::regex_match(input, matches, pattern)) {
@@ -27,6 +29,7 @@ void InputHandler::processInput(const std::string input, Request& request) {
           " - subnet requests found: " + matches[2].str());
   request.address = Helper::assignAddress(matches[1].str());
   request.subnetRequests = Helper::assignSubnetRequests(matches[2].str());
+  request.ascendingOrder = Helper::assignAscendingOrder(matches[3].str());
 }
 
 uint32_t InputHandler::Helper::assignAddress(const std::string& ipString) {
@@ -63,7 +66,7 @@ InputHandler::Helper::assignSubnetRequests(
         "InputHandler::Helper::assignSubnetRequests(): No valid subnet "
         "requests found.");
   }
-  
+
   // Count the number of matches
   size_t matchCount = std::distance(it, end);
   if (matchCount > Common::MAX_SUBNETS) {
@@ -81,6 +84,20 @@ InputHandler::Helper::assignSubnetRequests(
   }
 
   return subnetRequests;
+}
+
+bool InputHandler::Helper::assignAscendingOrder(const std::string& order) {
+  // Assign the ascending order based on the input
+  if (order == "ASC") {
+    return true;
+  } else if (order == "DESC") {
+    return false;
+  } else {
+    throw std::invalid_argument(
+        "InputHandler::Helper::assignAscendingOrder(): Invalid order "
+        "specified. "
+        "Use 'ASC' or 'DESC'.");
+  }
 }
 
 std::string InputHandler::inputToString(int argc, const char* argv[]) {

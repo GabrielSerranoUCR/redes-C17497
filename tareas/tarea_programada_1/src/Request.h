@@ -34,6 +34,7 @@ struct Request {
   uint32_t address;  // Address to be subnetted
   std::vector<std::pair<std::string, size_t>>
       subnetRequests;  // List of subnet requests
+  bool ascendingOrder;  // Flag for sorting order
 
   std::vector<std::tuple<std::string, uint32_t, size_t>>
       subnetResults;  // Results of subnetting operations

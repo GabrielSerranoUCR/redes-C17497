@@ -47,8 +47,15 @@ void RequestHandler::Helper::subnet(Request& request) {
     size_t mask =
         32 - static_cast<size_t>(std::ceil(std::log2(usableAddresses + 2)));
     uint32_t networkSize = 1 << (32 - mask);
-    uint32_t subnetAddress = (request.address + networkSize - 1) & ~(networkSize - 1);
+    uint32_t subnetAddress =
+        (request.address + networkSize - 1) & ~(networkSize - 1);
 
+    Log::getInstance().log(
+        "DEBUG",
+        "RequestHandler::Helper::subnet(): Subnetting: " + subnetRequest.first +
+            " - Usable Addresses: " + std::to_string(usableAddresses) +
+            " - Mask: " + std::to_string(mask) +
+            " - Address: " + Common::addressToString(subnetAddress));
     // Store the result in the request
     request.subnetResults.emplace_back(subnetRequest.first, subnetAddress,
                                        mask);
@@ -58,13 +65,27 @@ void RequestHandler::Helper::subnet(Request& request) {
         "INFO", "Subnet created: " + subnetRequest.first +
                     " - Address: " + Common::addressToString(subnetAddress) +
                     " - Mask: " + std::to_string(mask));
-    
+
     // Update the request address for next subnet
     request.address = subnetAddress + networkSize;
   }
 }
 
 void RequestHandler::Helper::sortSubnetRequests(Request& request) {
-  std::sort(request.subnetRequests.begin(), request.subnetRequests.end(),
-            [](const auto& a, const auto& b) { return a.second > b.second; });
+  if (request.ascendingOrder) {
+    std::sort(request.subnetRequests.begin(), request.subnetRequests.end(),
+              [](const auto& a, const auto& b) { return a.second < b.second; });
+    Log::getInstance().log(
+        "DEBUG",
+        "RequestHandler::Helper::sortSubnetRequests(): Sorted "
+        "subnet requests in ascending order.");
+  } else {
+    // Sort in descending order
+    std::sort(request.subnetRequests.begin(), request.subnetRequests.end(),
+              [](const auto& a, const auto& b) { return a.second > b.second; });
+    Log::getInstance().log(
+        "DEBUG",
+        "RequestHandler::Helper::sortSubnetRequests(): Sorted "
+        "subnet requests in descending order.");
+  }
 }
