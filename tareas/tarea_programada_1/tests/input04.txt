@@ -1,0 +1,2 @@
+172.20.0.0 | Admin, 500; DI, 200; MTI, 150; FI, 300; EM, 250; IE, 100; CITIC, 10; CIC, 4; Aulas, 800; Audit, 100; Biblio, 90; Cafe, 30
+
