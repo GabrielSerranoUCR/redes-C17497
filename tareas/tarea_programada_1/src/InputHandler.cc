@@ -3,6 +3,7 @@
 #include <regex>
 
 #include "Log.h"
+#include "Common.h"
 
 void InputHandler::processInput(const std::string input, Request& request) {
   // Validate the input format using regex
@@ -61,6 +62,15 @@ InputHandler::Helper::assignSubnetRequests(
     throw std::invalid_argument(
         "InputHandler::Helper::assignSubnetRequests(): No valid subnet "
         "requests found.");
+  }
+  
+  // Count the number of matches
+  size_t matchCount = std::distance(it, end);
+  if (matchCount > Common::MAX_SUBNETS) {
+    throw std::invalid_argument(
+        "InputHandler::Helper::assignSubnetRequests(): Too many subnet "
+        "requests. Maximum allowed is " +
+        std::to_string(Common::MAX_SUBNETS) + ".");
   }
   // Iterate through all matches
   while (it != end) {
