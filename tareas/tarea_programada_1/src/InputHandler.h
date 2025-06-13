@@ -16,6 +16,7 @@
 namespace InputHandler {
 // Public interface
 void processInput(const std::string input, Request& request);
+std::string inputToString(const int argc, const char* argv[]);
 /*
  * @namespace Helper
  * @brief Contains private helper functions for input processing.

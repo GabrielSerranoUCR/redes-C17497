@@ -59,8 +59,9 @@ InputHandler::Helper::assignSubnetRequests(
   std::sregex_iterator end;
   if (it == end) {
     throw std::invalid_argument(
-      "InputHandler::Helper::assignSubnetRequests(): No valid subnet requests found.");
-    }
+        "InputHandler::Helper::assignSubnetRequests(): No valid subnet "
+        "requests found.");
+  }
   // Iterate through all matches
   while (it != end) {
     std::string name = (*it)[1].str();
@@ -70,4 +71,23 @@ InputHandler::Helper::assignSubnetRequests(
   }
 
   return subnetRequests;
+}
+
+std::string InputHandler::inputToString(int argc, const char* argv[]) {
+  std::string inputStr;
+  // if not using input redirecting
+  if (argc > 1) {
+    // Concatenate each C-style string
+    for (int i = 1; i < argc; ++i) {
+      inputStr += argv[i];
+      if (i < argc - 1) {
+        inputStr += " ";
+      }
+    }
+  } else {  // if using input redirecting
+    std::stringstream fileContents;
+    fileContents << std::cin.rdbuf();
+    inputStr = fileContents.str();
+  }
+  return inputStr;
 }
