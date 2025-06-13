@@ -12,7 +12,7 @@ void InputHandler::processInput(const std::string input, Request& request) {
         "InputHandler::processInput(): Input cannot be empty.");
   }
   std::regex pattern(
-      R"((\d{1,3}(?:\.\d{1,3}){3})\s*\|\s*((?:\w+\s*,\s*\d+\s*;?\s*)+)\s*\|\s*(ASC|DESC))");
+      R"((\d{1,3}(?:\.\d{1,3}){3})\s*\|\s*([A-Za-z]+\s*,\s*\d+(?:\s*;\s*[A-Za-z]+\s*,\s*\d+)*)\s*\|\s*(ASC|DESC))");
 
   std::smatch matches;
 
@@ -89,9 +89,9 @@ InputHandler::Helper::assignSubnetRequests(
 bool InputHandler::Helper::assignAscendingOrder(const std::string& order) {
   // Assign the ascending order based on the input
   if (order == "ASC") {
-    return true;
-  } else if (order == "DESC") {
     return false;
+  } else if (order == "DESC") {
+    return true;
   } else {
     throw std::invalid_argument(
         "InputHandler::Helper::assignAscendingOrder(): Invalid order "
@@ -99,7 +99,6 @@ bool InputHandler::Helper::assignAscendingOrder(const std::string& order) {
         "Use 'ASC' or 'DESC'.");
   }
 }
-
 std::string InputHandler::inputToString(int argc, const char* argv[]) {
   std::string inputStr;
   // if not using input redirecting
@@ -112,9 +111,12 @@ std::string InputHandler::inputToString(int argc, const char* argv[]) {
       }
     }
   } else {  // if using input redirecting
-    std::stringstream fileContents;
-    fileContents << std::cin.rdbuf();
-    inputStr = fileContents.str();
+    std::string line;
+    if (std::getline(std::cin, line)) {
+      line.erase(std::find_if(line.rbegin(), line.rend(), 
+          [](unsigned char ch) { return !std::isspace(ch); }).base(), line.end());
+      inputStr = line;
+    }
   }
   return inputStr;
 }
